@@ -10,6 +10,7 @@ router.route('/')
         });
       })
       .post((req, res) => {
+        req.body.tags = req.body.tags.split(",");
         Article.create(req.body, (err, article) => {
           res.status(err ? 400 : 200).send(err || article);
         })
@@ -22,6 +23,7 @@ router.route('/:id')
       });
     })
     .put((req, res) => {
+      req.body.modifiedOn = (new Date());
       Article.findByIdAndUpdate(req.params.id,
         { $set: req.body },
         { new: true },
@@ -38,5 +40,17 @@ router.route('/:id')
         res.status(err ? 400 : 200).send(err || `${article.article_name} deleted`);
       });
     });
+
+router.route('/:id/:k')
+    .get((req, res)=>{
+      let k= req.params.k;
+      Article.findById(req.params.id, (err, article) => {
+        if (err) {
+          res.status(400).send(err);
+        } else {
+          res.status(err ? 400 : 200).send(err || article[k]);
+        }
+      })
+    })
 
 module.exports = router;
