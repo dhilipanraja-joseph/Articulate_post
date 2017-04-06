@@ -24,6 +24,9 @@ router.route('/:id')
     })
     .put((req, res) => {
       req.body.modifiedOn = (new Date());
+      if(req.body.tags) {
+        req.body.tags = req.body.tags.split(",");
+      }
       Article.findByIdAndUpdate(req.params.id,
         { $set: req.body },
         { new: true },
